@@ -1,0 +1,5 @@
+*/bin
+*/obj
+.nuke/temp
+.vs
+.tmp

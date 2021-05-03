@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - property:
+      name: now
+      value: now()
+  - include:
+      file: migrations/000000-init.yml

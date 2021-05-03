@@ -1,0 +1,134 @@
+databaseChangeLog:
+  - changeSet:
+      id: 000000-tag-init
+      author: ihildebrandt
+      changes:
+        - tagDatabase:
+            tag: init
+  - changeSet:
+      id: 000000-create-recipes
+      author: ihildebrandt
+      changes:
+        - createTable:
+            tableName: recipes
+            schemaName: public
+            columns: 
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  startWith: 1000
+              - column: 
+                  name: name
+                  type: varchar(150)
+                  constraints: 
+                    nullable: false
+        - createTable:
+            tableName: recipe_ingredients
+            schemaName: public
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  startWith: 1000
+              - column:
+                  name: recipe_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: int
+              - column:
+                  name: measure
+                  type: varchar(150)
+              - column:
+                  name: name
+                  type: varchar(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ord
+                  type: int
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: recipe_instructions
+            schemaName: public
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  startWith: 1000
+              - column:
+                  name: recipe_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text
+                  type: varchar(1000)
+              - column:
+                  name: ord
+                  type: int
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: recipes
+            schemaName: public
+            columnNames: id
+            constraintName: pk_recipes
+        - addPrimaryKey:
+            tableName: recipe_ingredients
+            schemaName: public
+            columnNames: id
+            constraintName: pk_recipe_ingredients
+        - addPrimaryKey:
+            tableName: recipe_instructions
+            schemaName: public
+            columnNames: id
+            constraintName: pk_recipe_instructions
+        - addForeignKeyContraint:
+            baseTableName: recipe_ingredients
+            baseTableSchemaName: public
+            baseColumnNames: recipe_id
+            referencedTableName: recipes
+            baseTableSchemaName: public
+            referencedColumnNames: id
+        - addForeignKeyContraint:
+            baseTableName: recipe_instructions
+            baseTableSchemaName: public
+            baseColumnNames: recipe_id
+            referencedTableName: recipes
+            baseTableSchemaName: public
+            referencedColumnNames: id
+  - changeSet:
+      id: 000000-create-recipes-data
+      author: ihildebrandt
+      changes:
+        - loadData:
+            tableName: recipes
+            schemaName: public
+            encoding: UTF-8
+            file: migrations/data/recipes.csv
+            separator: ','
+            quotchar: ''''
+        - loadData:
+            tableName: recipe_ingredients
+            schemaName: public
+            encoding: UTF-8
+            file: migrations/data/recipe_ingredients.csv
+            separator: ','
+            quotchar: ''''
+        - loadData:
+            tableName: recipe_instructions
+            schemaName: public
+            encoding: UTF-8
+            file: migrations/data/recipe_instructions.csv
+            separator: ','
+            quotchar: ''''
+      rollback:
+        - sql:
+            sql: TRUNCATE TABLE public.recipes
